@@ -35,7 +35,7 @@ nameInput.addEventListener("blur", () => {
     markPositive(nameInput);
     markPositive(nameInputHelp);
     nameInput.hidden = false;
-    nameInputHelp.innerText = `Hi ${value}, Welcome to Homework Hub`;
+    nameInputHelp.innerText = `Hi ${value}, Welcome to MCO`;
     validator.name = true;
     checkValidation();
   }

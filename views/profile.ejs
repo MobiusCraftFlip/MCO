@@ -16,8 +16,15 @@
                     <%= profile.flags[i] %>
                 </li>
             <% } %>
-        </ul>
-          <!-- <p><%=profile.flags.join(", ") %></p> -->
+          </ul>
+          <% if(profile.roblox_id) { %>
+            <br />
+            <p class="title is-5">Roblox</p>
+            <!-- Place logic for editing profile here -->
+              <p>Roblox Username: <%= profile.roblox_username %></p>
+              <p>Roblox userid: <%= profile.roblox_id %></p>
+              <p>Roblox Displayname: <%= profile.roblox_displayname %></p>
+            <% } %>
         </div>
       </div>
     </div>
@@ -25,6 +32,7 @@
     <!-- Place logic for editing profile here -->
     <a class="button is-light">Edit Profile</a>
     <% } %>
+    <a class="button is-dark" href="/roblox/link">Link Roblox</a>
   </div>
 </div>
 
