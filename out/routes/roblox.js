@@ -44,16 +44,11 @@ module.exports = (app, passport, UserModel)=>{
     });
     app.get("/roblox/redirect", async (req, res)=>{
         // res.send(req.query)
-        console.log(res.query);
         const code = req.query.code;
         if (typeof code == "string") {
             const tokenResponse = await getUserToken(code);
-            console.log(tokenResponse);
             const userinfo = await getUserInfo(tokenResponse.access_token);
-            console.log(userinfo);
             const nonceinfo = nonces[req.query.state];
-            console.log(req.query);
-            console.log(nonceinfo);
             if (nonceinfo && userinfo.name && userinfo.nickname && userinfo.preferred_username) {
                 const user = await UserModel.findOne({
                     _id: nonceinfo._id
@@ -61,7 +56,6 @@ module.exports = (app, passport, UserModel)=>{
                 user.roblox_username = userinfo.preferred_username;
                 user.roblox_id = userinfo.sub;
                 user.roblox_displayname = userinfo.nickname;
-                console.log(user);
                 await user.save();
                 return res.redirect("/profile");
             }

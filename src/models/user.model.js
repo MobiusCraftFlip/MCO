@@ -11,7 +11,12 @@ let userSchema = new Schema({
   roblox_id: String,
   roblox_username: String,
   roblox_displayname: String,
-  
+
+
+  discord_id: String,
+  discord_username: String,
+  discord_displayname: String,
+
   flags: [String],
 })
 

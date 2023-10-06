@@ -25,6 +25,14 @@
               <p>Roblox userid: <%= profile.roblox_id %></p>
               <p>Roblox Displayname: <%= profile.roblox_displayname %></p>
             <% } %>
+            <% if(profile.discord_id) { %>
+              <br />
+              <p class="title is-5">Discord</p>
+              <!-- Place logic for editing profile here -->
+                <p>Discord Username: <%= profile.discord_username %></p>
+                <p>Discord userid: <%= profile.discord_id %></p>
+                <p>Discord Displayname: <%= profile.discord_displayname %></p>
+              <% } %>
         </div>
       </div>
     </div>
@@ -33,6 +41,7 @@
     <a class="button is-light">Edit Profile</a>
     <% } %>
     <a class="button is-dark" href="/roblox/link">Link Roblox</a>
+    <a class="button is-dark" href="/discord/link">Link Discord</a>
   </div>
 </div>
 

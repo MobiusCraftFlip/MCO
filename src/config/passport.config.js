@@ -24,7 +24,7 @@ module.exports = passport => {
     passReqToCallback: true
   }, (req, username, password, done) => {
     let newUser = new User({
-      username: username,
+      username: username.toLocaleLowerCase(),
       name: req.body.name,
       email: req.body.email
     })
@@ -50,7 +50,7 @@ module.exports = passport => {
     passReqToCallback: true
   }, (req, username, password, done) => {
     User.findOne({
-      username: username
+      username: username.toLowerCase()
     }, (err, user) => {
       console.log(user)
       if (err) throw err

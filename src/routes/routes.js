@@ -135,6 +135,7 @@ module.exports = (app, passport, UserModel) => {
   })
 
   require("./roblox")(app, passport, UserModel)
+  require("./discord")(app, passport, UserModel)
 
   app.use("/gloc/", require("./gloc"))
 

@@ -2,22 +2,23 @@ const crypto = require("crypto")
 const fetch = require("node-fetch")
 const nonces = {}
 
-async function getUserInfo(code) {
-  return await (await fetch("https://apis.roblox.com/oauth/v1/userinfo", {
+async function getUserInfo(token) {
+  return await (await fetch(`https://discord.com/api/users/@me`, {
     headers: {
-      Authorization: `Bearer ${code}`
-    }
+        authorization: `Bearer ${token}`,
+    },
   })).json()
 }
 
 async function getUserToken(code) {
-  return await (await fetch("https://apis.roblox.com/oauth/v1/token", {
+  return await (await fetch("https://discord.com/api/oauth2/token", {
     method: "POST",
     body: new URLSearchParams({
       grant_type: "authorization_code",
       code: code,
-      client_id: process.env.ROBLOX_CLIENT_ID,
-      client_secret: process.env.ROBLOX_CLIENT_SECRET,
+      client_id: process.env.DISCORD_CLIENT_ID,
+      client_secret: process.env.DISCORD_CLIENT_SECRET,
+      redirect_uri: `${process.env.BASEURL}/discord/redirect`
     }),
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
@@ -26,11 +27,11 @@ async function getUserToken(code) {
 }
 
 function generateOAuthURL(nonce) {
-  return `https://authorize.roblox.com?client_id=${process.env.ROBLOX_CLIENT_ID}&redirect_uri=${process.env.BASEURL + "/roblox/redirect"}&scope=openid+profile&response_type=Code&prompts=login+consent&state=${nonce}`
+  return `https://discord.com/api/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID}&redirect_uri=${process.env.BASEURL}/discord/redirect&response_type=code&scope=identify&state=${nonce}`
 }
 
 module.exports = (app, passport, UserModel) => {
-  app.get("/roblox/link", (req,res) => {
+  app.get("/discord/link", (req,res) => {
     if (!req.isAuthenticated()) {
       return res.render("404", {
         isAuth: req.isAuthenticated(),
@@ -49,20 +50,19 @@ module.exports = (app, passport, UserModel) => {
     ))
   })
 
-  app.get("/roblox/redirect", async (req,res) => {
-    // res.send(req.query)
+  app.get("/discord/redirect", async (req,res) => {
     const code = req.query.code
     if (typeof code == "string") {
       const tokenResponse = await getUserToken(code)
       const userinfo =  await getUserInfo(tokenResponse.access_token)
       const nonceinfo = nonces[req.query.state]
-      if (nonceinfo && userinfo.name && userinfo.nickname && userinfo.preferred_username) {
+      if (nonceinfo && userinfo.username && userinfo.id && userinfo.global_name) {
         const user = await UserModel.findOne({
           _id: nonceinfo._id
         }).exec()
-        user.roblox_username = userinfo.preferred_username
-        user.roblox_id = userinfo.sub
-        user.roblox_displayname = userinfo.nickname
+        user.discord_username = userinfo.username
+        user.discord_id = userinfo.id
+        user.discord_displayname = userinfo.global_name
         await user.save()
         return res.redirect("/profile")
       }
