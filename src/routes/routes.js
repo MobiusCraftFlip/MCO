@@ -37,6 +37,13 @@ module.exports = (app, passport, UserModel) => {
   });
 
   app.get("/user/:username", (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.render("404", {
+        isAuth: req.isAuthenticated(),
+        user: req.user,
+        profile: null,
+      })
+    }
     let username = req.params.username;
     UserModel.findOne({
       username
@@ -49,6 +56,7 @@ module.exports = (app, passport, UserModel) => {
           profile: null,
         });
       else {
+        console.log(doc)
         res.render("profile", {
           isAuth: req.isAuthenticated(),
           user: req.user,
@@ -57,11 +65,53 @@ module.exports = (app, passport, UserModel) => {
         });
       }
     });
-
   });
+
+  app.get("/user/:username/edit", (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.render("404", {
+        isAuth: req.isAuthenticated(),
+        user: req.user,
+        profile: null,
+      })
+    }
+
+    
+
+    let username = req.params.username;
+    UserModel.findOne({
+      username
+    }, (err, doc) => {
+      if (err) throw err;
+      if (!doc)
+        res.render("404", {
+          isAuth: req.isAuthenticated(),
+          user: req.user,
+          profile: null,
+        });
+      else {
+        if (!(req.user.flags.includes("sudo") || req.user.username == doc.username)) {
+          return res.render("404", {
+            isAuth: req.isAuthenticated(),
+            user: req.user,
+            profile: null,
+          })
+        }
+        console.log(doc)
+        res.render("user/edit", {
+          isAuth: req.isAuthenticated(),
+          user: req.user,
+          profile: doc,
+          isRoot: req.user.flags.includes("sudo")
+        });
+      }
+    });
+  });
+
   app.get("/logout", (req, res) => {
-    req.logout();
-    res.redirect("/");
+    req.logout(() => {
+      res.redirect("/")
+    });
   });
 
   app.get("/check-username-availability", (req, res) => {
@@ -79,6 +129,8 @@ module.exports = (app, passport, UserModel) => {
       user: req.user,
     });
   });
+
+  app.use("/gloc/", require("./gloc"))
 
   app.get("*", (req, res) => {
     res.render("404", {

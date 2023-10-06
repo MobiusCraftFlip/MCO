@@ -1,0 +1,40 @@
+<%- include('../components/header') %>
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+            <input class="input title is-4" type="text" value="<%= profile.name %>">
+          <p class="subtitle is-6">Username: <%= profile.username %></p>
+          <form>
+            <% if(isRoot){ %>
+                <label class="label">Flags</label>
+                <div class="control">
+                    <!-- Place logic for editing profile here -->
+                    <input class="input" type="text"  value="<%= profile.flags.join(',') %>"></input>
+                </div>
+            <% } %>
+          </form>
+          <br />
+          <% if(!isRoot){ %>
+          <p class="title is-5">Flags</p>
+          <ul>
+            <% for(var i=0; i<profile.flags.length; i++) { %>
+                <li>
+                    <%= profile.flags[i] %>
+                </li>
+            <% } %>
+          </ul>
+          <% } %>
+          <!-- <p><%=profile.flags.join(", ") %></p> -->
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+
+<%- include('../components/footer') %>

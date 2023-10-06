@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 8080;
@@ -41,7 +42,7 @@ app.use(passport.session());
 app.use(flash());
 
 // Routes
-require("./routes/routes")(app, passport, User);
+require("./src/routes/routes")(app, passport, User);
 
 // Launch server
 app.listen(port, () => console.log(`server started on port ${port}`));

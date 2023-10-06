@@ -8,6 +8,16 @@
         <div class="media-content">
           <p class="title is-4"><%= profile.name %></p>
           <p class="subtitle is-6"><%= profile.username %></p>
+          <br />
+          <p class="title is-5">Flags</p>
+          <ul>
+            <% for(var i=0; i<profile.flags.length; i++) { %>
+                <li>
+                    <%= profile.flags[i] %>
+                </li>
+            <% } %>
+        </ul>
+          <!-- <p><%=profile.flags.join(", ") %></p> -->
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="/css/style.css">
-  <title>Auth Template</title>
+  <title>MCO</title>
 </head>
 
 <body>
@@ -14,7 +14,7 @@
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
           <h2 class="title">
-            <span style="color: #723881;">Brand</span>
+            <span style="color: #723881;">MCO</span>
           </h2>
         </a>
 
@@ -38,6 +38,11 @@
           <a class="navbar-item">
             About
           </a>
+          <% if(isAuth && user.flags.includes("glocadmin")) { %>
+            <a class="navbar-item" href="/gloc/warnings">
+              Glocestershire
+            </a>
+          <% } %>
         </div>
         <div class="navbar-end">
           <% if(!isAuth){ %>

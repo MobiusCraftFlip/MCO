@@ -1,6 +1,17 @@
 const LocalStategy = require("passport-local").Strategy;
-
+const nodemailer = require("nodemailer")
 const User = require("../models/user.model");
+const config = require("../config.json")
+
+let transporter = nodemailer.createTransport(config.nodemailer.config)
+
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Server is ready to take our messages");
+  }
+});
 
 module.exports = passport => {
   passport.serializeUser((user, done) => done(null, user.id));
@@ -22,6 +33,16 @@ module.exports = passport => {
       if (err) throw err;
       return done(null, newUser);
     });
+
+    const info = transporter.sendMail({
+      from: '"MCO" <mco-noreply@mobius.ovh>', // sender address
+      to: req.body.email, // list of receivers
+      subject: "MCO user signup", // Subject line
+      text: "Thank you for signing up to MCO, if you did not mean to create an account, bad luck. If you are here without permission kindly go away. \n \n From \n Mobius", // plain text body
+    }).catch(console.warn)
+      .then((message) => {
+        console.log("Message sent: %s", message.messageId);
+      })
   }));
 
   // Login

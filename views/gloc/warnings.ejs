@@ -1,0 +1,42 @@
+<%- include('../components/header') %>
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+          <p class="title is-4">Glocestershire Warnings</p>
+          <br />
+          <table class="table">
+            <% for(var i=0; i<warnings.length; i++) { %>
+                <tr>
+                    <th>
+                        <%= warnings[i]._id %> 
+                    </th>
+                    <th>
+                        <a href="./players/<%= warnings[i].userid %>"><%= warnings[i].name %> </a>
+                    </th>
+                    <th>
+                        <%= warnings[i].warner %> 
+                    </th>
+                    <th>
+                        <%= warnings[i].active %> 
+                    </th>
+                    <th>
+                        <%= warnings[i].reason %> 
+                    </th>
+                    <th>
+                        <%= warnings[i].date.toDateString() %> 
+                    </th>
+                </tr>
+            <% } %>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%- include('../components/footer') %>
