@@ -20,12 +20,14 @@
           <div class="control">
             <input class="input" name="password" type="password" placeholder="">
           </div>
-          <a class="help">Forgot Password?</a>
+          <a class="help" href="/admin/reset-password">Forgot Password?</a>
         </div>
         <% if (message.length > 0) { %>
         <div><%= message %></div>
         <% } %>
 
+        <div class="g-recaptcha" data-sitekey="<%= recaptcha_key %>" data-callback="recaptchaCallback"></div>
+        <br />
         <div class="field is-grouped">
           <div class="control">
             <input id="submit-button" value="Login" type="submit" class="button is-link"></input>

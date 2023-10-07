@@ -16,82 +16,88 @@ fetch(url)
   .then(response => response.json())
   .then(data => users = data);
 let validator = {
-  name: false,
-  email: false,
-  username: false,
   password: false,
-  rePassword: false
+  rePassword: false,
 };
-
-nameInput.addEventListener("blur", () => {
-  let value = nameInput.value;
-  if (value === "") {
-    markNegative(nameInput);
-    markNegative(nameInputHelp);
-    nameInputHelp.hidden = false;
-    nameInputHelp.innerText = "Enter your First Name";
-    validator.name = false;
-  } else {
-    markPositive(nameInput);
-    markPositive(nameInputHelp);
-    nameInput.hidden = false;
-    nameInputHelp.innerText = `Hi ${value}, Welcome to MCO`;
-    validator.name = true;
-    checkValidation();
-  }
-});
-
-usernameInput.addEventListener("blur", () => {
-  let value = usernameInput.value;
-  if (value === "") {
-    markNegative(usernameInput);
-    markNegative(usernameInputHelp);
-    usernameInputHelp.hidden = false;
-    usernameInputHelp.innerText = "Enter a username";
-    validator.username = false;
-  } else {
-    if (userExists(value)) {
+if (nameInput) {
+  let validator = {
+    name: false,
+    email: false,
+    username: false,
+    password: false,
+    rePassword: false,
+  };
+  nameInput.addEventListener("blur", () => {
+    let value = nameInput.value;
+    if (value === "") {
+      markNegative(nameInput);
+      markNegative(nameInputHelp);
+      nameInputHelp.hidden = false;
+      nameInputHelp.innerText = "Enter your First Name";
+      validator.name = false;
+    } else {
+      markPositive(nameInput);
+      markPositive(nameInputHelp);
+      nameInput.hidden = false;
+      nameInputHelp.innerText = `Hi ${value}, Welcome to MCO`;
+      validator.name = true;
+      checkValidation();
+    }
+  });
+  
+  usernameInput.addEventListener("blur", () => {
+    let value = usernameInput.value;
+    if (value === "") {
       markNegative(usernameInput);
       markNegative(usernameInputHelp);
       usernameInputHelp.hidden = false;
-      usernameInputHelp.innerText = "Someone already took that username sadly.";
+      usernameInputHelp.innerText = "Enter a username";
       validator.username = false;
     } else {
-      markPositive(usernameInput);
-      markPositive(usernameInputHelp);
-      usernameInputHelp.hidden = false;
-      usernameInputHelp.innerText = "That's seems a good one!";
-      validator.username = true;
-      checkValidation();
+      if (userExists(value)) {
+        markNegative(usernameInput);
+        markNegative(usernameInputHelp);
+        usernameInputHelp.hidden = false;
+        usernameInputHelp.innerText = "Someone already took that username sadly.";
+        validator.username = false;
+      } else {
+        markPositive(usernameInput);
+        markPositive(usernameInputHelp);
+        usernameInputHelp.hidden = false;
+        usernameInputHelp.innerText = "That's seems a good one!";
+        validator.username = true;
+        checkValidation();
+      }
     }
-  }
-});
-
-emailInput.addEventListener("blur", () => {
-  let value = emailInput.value;
-  if (value === "") {
-    markNegative(emailInput);
-    markNegative(emailInputHelp);
-    emailInputHelp.hidden = false;
-    emailInputHelp.innerText = "Enter an email";
-    validator.email = false;
-  } else {
-    if (validateEmail(value)) {
-      markPositive(emailInput);
-      markPositive(emailInputHelp);
-      emailInputHelp.hidden = false;
-      emailInputHelp.innerText = "All set!";
-      validator.email = true;
-      checkValidation();
-    } else {
+  });
+  
+  emailInput.addEventListener("blur", () => {
+    let value = emailInput.value;
+    if (value === "") {
       markNegative(emailInput);
       markNegative(emailInputHelp);
       emailInputHelp.hidden = false;
-      emailInputHelp.innerText = "Invalid email! Did you miss something?";
+      emailInputHelp.innerText = "Enter an email";
       validator.email = false;
+    } else {
+      if (validateEmail(value)) {
+        markPositive(emailInput);
+        markPositive(emailInputHelp);
+        emailInputHelp.hidden = false;
+        emailInputHelp.innerText = "All set!";
+        validator.email = true;
+        checkValidation();
+      } else {
+        markNegative(emailInput);
+        markNegative(emailInputHelp);
+        emailInputHelp.hidden = false;
+        emailInputHelp.innerText = "Invalid email! Did you miss something?";
+        validator.email = false;
+      }
     }
-  }
-});
+  });
+}
+
 
 passwordInput.addEventListener("blur", () => {
   let value = passwordInput.value;
@@ -136,6 +142,11 @@ rePasswordInput.addEventListener("change", () => {
     checkValidation();
   }
 });
+
+// function recaptchaCallback() {
+//   validator.recaptcha = true
+//   checkValidation()
+// }
 
 function checkValidation() {
   for (const bool of Object.values(validator))

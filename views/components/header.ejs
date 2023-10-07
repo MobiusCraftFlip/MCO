@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="/css/style.css">
+  <script src="https://www.google.com/recaptcha/api.js"></script>
   <title>MCO</title>
 </head>
 
 <body>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="navbar" role="navigation" aria-label="main navigation dropdown ">
     <div class="container">
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
@@ -31,11 +32,38 @@
           <a class="navbar-item">
             Home
           </a>
-          <% if(isAuth && user.flags.includes("glocadmin")) { %>
-            <a class="navbar-item" href="/gloc/warnings">
-              Glocestershire
-            </a>
-          <% } %>
+          <% if((isAuth && user.flags.includes("glocadmin")) || isAuth && user.roblox_id) { %>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Glocestershires
+              </a>
+              <div class="navbar-dropdown">
+                <% if(isAuth && user.roblox_id) { %>
+                  <a class="navbar-item" href="/gloc/players/<%= user.roblox_id %>">
+                    My History
+                  </a>
+                <% } %>
+                <% if(isAuth && user.flags.includes("glocadmin")) { %>
+                  <a class="navbar-item" href="/gloc/warnings">
+                    Warnings
+                  </a>
+                <% } %>
+              </div>
+            </div>
+            
+            <% } %>
+            <% if((isAuth && user.flags.includes("techteam"))) { %>
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                  Admin
+                </a>
+                <div class="navbar-dropdown">
+                    <a class="navbar-item" href="/users">
+                      Users
+                    </a>
+                </div>
+              </div>
+              <% } %>
         </div>
         <div class="navbar-end">
           <% if(!isAuth){ %>

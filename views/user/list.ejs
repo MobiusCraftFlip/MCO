@@ -1,0 +1,52 @@
+<%- include('../components/header') %>
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+          <p class="title is-4">Players</p>
+          <br />
+          <table class="table">
+            <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Flags</th>
+                </tr>
+              </thead>
+              <tbody>
+            <% for(var i=0; i<profiles.length; i++) { %>
+                <tr>
+                    <!-- <th>
+                        <%= profiles[i]._id %> 
+                    </th> -->
+                    <th>
+                        <a href="./user/<%= profiles[i].username %>"><%= profiles[i].username %> </a>
+                    </th>
+                    <th>
+                        <%= profiles[i].name %> 
+                    </th>
+                    <th>
+                        <%= profiles[i].email %> 
+                    </th>
+                    <th>
+                        <%= profiles[i].flags.join(", ") %> 
+                    </th>
+                    <th>
+                        <a class="button is-danger is-small" href="/admin/password_reset_email/<%= profiles[i].username %>?redirect=<%= encodeURIComponent(`${req.protocol}://${req.get('host')}${req.originalUrl}`) %>">Password Reset</a>
+                    </th>
+                </tr>
+            <% } %>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%- include('../components/footer') %>

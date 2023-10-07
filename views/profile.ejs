@@ -37,11 +37,12 @@
       </div>
     </div>
     <% if(isRoot){ %>
-    <!-- Place logic for editing profile here -->
-    <a class="button is-light">Edit Profile</a>
+      <!-- Place logic for editing profile here -->
+      <a class="button is-light">Edit Profile</a>
+      <a class="button is-danger" href="/admin/password_reset_email/<%= profile.username %>">Reset My Password</a>
+      <a class="button is-dark" href="/roblox/link">Link Roblox</a>
+      <a class="button is-dark" href="/discord/link">Link Discord</a>
     <% } %>
-    <a class="button is-dark" href="/roblox/link">Link Roblox</a>
-    <a class="button is-dark" href="/discord/link">Link Discord</a>
   </div>
 </div>
 

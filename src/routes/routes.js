@@ -1,4 +1,10 @@
+const {recaptcha, postMiddleware} = require("../config/recaptcha.config")
+
 module.exports = (app, passport, UserModel) => {
+
+  require("./admin")(app, passport, UserModel)
+  require("./roblox")(app, passport, UserModel)
+  require("./discord")(app, passport, UserModel)
 
   // Home Page
   app.get("/", (req, res) => res.render("home", {
@@ -14,10 +20,11 @@ module.exports = (app, passport, UserModel) => {
   app.get("/login", (req, res) => res.render("login", {
     message: req.flash("loginMessage"),
     isAuth: req.isAuthenticated(),
-    user: req.user
+    user: req.user,
+    recaptcha_key: process.env.RECAPTCHA_KEY
   }))
 
-  app.post("/login", passport.authenticate("local-login", {
+  app.post("/login", recaptcha.middleware.verify, postMiddleware, passport.authenticate("local-login", {
     successRedirect: "/profile", // redirect to the secure profile section
     failureRedirect: "/login", // redirect back to the signup page if there is an error
     failureFlash: true // allow flash messages
@@ -26,10 +33,11 @@ module.exports = (app, passport, UserModel) => {
   // Signup
   app.get("/signup", (req, res) => res.render("signup", {
     isAuth: req.isAuthenticated(),
-    user: req.user
+    user: req.user,
+    recaptcha_key: process.env.RECAPTCHA_KEY
   }))
 
-  app.post("/signup", passport.authenticate("local-signup", {
+  app.post("/signup", recaptcha.middleware.verify, postMiddleware, passport.authenticate("local-signup", {
     successRedirect: "/profile",
     failureRedirect: "/signup"
   }))
@@ -40,7 +48,7 @@ module.exports = (app, passport, UserModel) => {
     res.redirect(redirectUrl)
   })
 
-  app.get("/user/:username", (req, res) => {
+  app.get("/user/:username", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.render("404", {
         isAuth: req.isAuthenticated(),
@@ -49,29 +57,28 @@ module.exports = (app, passport, UserModel) => {
       })
     }
     let username = req.params.username
-    UserModel.findOne({
+    const doc = await UserModel.findOne({
       username
-    }, (err, doc) => {
-      if (err) throw err
-      if (!doc)
-        res.render("404", {
-          isAuth: req.isAuthenticated(),
-          user: req.user,
-          profile: null,
-        })
-      else {
-        console.log(doc)
-        res.render("profile", {
-          isAuth: req.isAuthenticated(),
-          user: req.user,
-          profile: doc,
-          isRoot: req.isAuthenticated() ? doc.username === req.user.username : false
-        })
-      }
     })
+
+    if (!doc)
+      res.render("404", {
+        isAuth: req.isAuthenticated(),
+        user: req.user,
+        profile: null,
+      })
+    else {
+      console.log(doc)
+      res.render("profile", {
+        isAuth: req.isAuthenticated(),
+        user: req.user,
+        profile: doc,
+        isRoot: req.isAuthenticated() ? doc.username === req.user.username : false
+      })
+    }
   })
 
-  app.get("/user/:username/edit", (req, res) => {
+  app.get("/user/:username/edit", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.render("404", {
         isAuth: req.isAuthenticated(),
@@ -79,37 +86,32 @@ module.exports = (app, passport, UserModel) => {
         profile: null,
       })
     }
-
-    
-
     let username = req.params.username
-    UserModel.findOne({
+    const doc = await UserModel.findOne({
       username
-    }, (err, doc) => {
-      if (err) throw err
-      if (!doc)
-        res.render("404", {
+    })
+    if (!doc)
+      res.render("404", {
+        isAuth: req.isAuthenticated(),
+        user: req.user,
+        profile: null,
+      })
+    else {
+      if (!(req.user.flags.includes("sudo") || req.user.username == doc.username)) {
+        return res.render("404", {
           isAuth: req.isAuthenticated(),
           user: req.user,
           profile: null,
         })
-      else {
-        if (!(req.user.flags.includes("sudo") || req.user.username == doc.username)) {
-          return res.render("404", {
-            isAuth: req.isAuthenticated(),
-            user: req.user,
-            profile: null,
-          })
-        }
-        console.log(doc)
-        res.render("user/edit", {
-          isAuth: req.isAuthenticated(),
-          user: req.user,
-          profile: doc,
-          isRoot: req.user.flags.includes("sudo")
-        })
       }
-    })
+      console.log(doc)
+      res.render("user/edit", {
+        isAuth: req.isAuthenticated(),
+        user: req.user,
+        profile: doc,
+        isRoot: req.user.flags.includes("sudo")
+      })
+    }
   })
 
   app.get("/logout", (req, res) => {
@@ -119,10 +121,13 @@ module.exports = (app, passport, UserModel) => {
   })
 
   app.get("/check-username-availability", (req, res) => {
-    UserModel.find((err, users) => {
-      if (err) throw err
+    UserModel.find({}).then(users => {
       let usernames = users.map(val => val.username)
       res.json(usernames)
+    })
+    .catch(err => {
+      console.warn(err)
+      res.sendStatus(500)
     })
   })
 
@@ -134,8 +139,6 @@ module.exports = (app, passport, UserModel) => {
     })
   })
 
-  require("./roblox")(app, passport, UserModel)
-  require("./discord")(app, passport, UserModel)
 
   app.use("/gloc/", require("./gloc"))
 

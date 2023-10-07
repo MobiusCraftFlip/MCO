@@ -1,22 +1,12 @@
 const LocalStategy = require("passport-local").Strategy
-const nodemailer = require("nodemailer")
 const User = require("../models/user.model")
-const config = require("../../config.json")
-
-let transporter = nodemailer.createTransport(config.nodemailer.config)
-
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log(error)
-  } else {
-    console.log("Server is ready to take our messages")
-  }
-})
+const {transporter} = require("./smtp.config")
 
 module.exports = passport => {
   passport.serializeUser((user, done) => done(null, user.id))
   passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => done(err, user))
+    // User.findById(id, (err, user) => done(err, user))
+    User.findById(id).exec().then((user) => done(undefined, user)).catch((err) => done(err))
   })
 
   // Signup
@@ -48,20 +38,18 @@ module.exports = passport => {
   // Login
   passport.use("local-login", new LocalStategy({
     passReqToCallback: true
-  }, (req, username, password, done) => {
-    User.findOne({
-      username: username.toLowerCase()
-    }, (err, user) => {
+  }, async (req, username, password, done) => {
+    const user = await User.findOne({
+      username: username.toLowerCase()}).exec()
       console.log(user)
-      if (err) throw err
-      // req.flash is the way to set flashdata using connect-flash
-      if (!user)
-        return done(null, false, req.flash("loginMessage", "No user found."))
-      if (!user.validatePassword(password))
-        return done(null, false, req.flash("loginMessage", "Oops! Wrong password.")) // create the loginMessage and save it to session as flashdata
+    // req.flash is the way to set flashdata using connect-flash
+    if (!user)
+      return done(null, false, req.flash("loginMessage", "No user found."))
+    if (!user.validatePassword(password))
+      return done(null, false, req.flash("loginMessage", "Oops! Wrong password.")) // create the loginMessage and save it to session as flashdata
 
-      // all is well, return successful user
-      return done(null, user)
-    })
+    // all is well, return successful user
+    return done(null, user)
+    
   }))
 }

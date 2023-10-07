@@ -3,6 +3,7 @@ const { Mongoose } = require("mongoose");
 const { createConnection, MongoClient, ServerApiVersion } = require("mongodb");
 const { Router } = require("express");
 const { getUsernameFromId } = require("noblox.js");
+const { check } = require("../util/permissions");
 const uri = process.env.MOKORE_URI;
 const client = new MongoClient(uri, {
     serverApi: {
@@ -11,11 +12,14 @@ const client = new MongoClient(uri, {
         deprecationErrors: true
     }
 });
+let connected = false;
 const Client = async ()=>{
-    if (client.isConnected()) {
+    if (connected) {
         return client;
     } else {
-        return await client.connect();
+        await client.connect();
+        connected = true;
+        return client;
     }
 };
 const router = Router();
@@ -27,7 +31,7 @@ router.get("/warnings", async (req, res)=>{
             profile: null
         });
     }
-    if (req.user && req.user.flags && req.user.flags.includes("glocadmin")) {
+    if (req.user && req.user.flags && check(req.user, "gloc.warnings.read")) {
         const warnings = await (await Client()).db("test").collection("warning_entity").find().sort({
             _id: -1
         }).limit(50).toArray();
@@ -42,7 +46,7 @@ router.get("/warnings", async (req, res)=>{
             try {
                 realNames = await Promise.all(names);
             } catch (error) {
-                res.send(500);
+                res.sendStatus(500);
             }
         }
         realNames.forEach((name, index)=>{
@@ -70,7 +74,7 @@ router.get("/players/:player", async (req, res)=>{
             profile: null
         });
     }
-    if (req.user && req.user.flags && req.user.flags.includes("glocadmin")) {
+    if (req.user && (req.user.flags && check(req.user, "gloc.warnings.read") || req.user.roblox_id == req.params.player)) {
         const warnings = await (await Client()).db("test").collection("warning_entity").find({
             userid: req.params.player
         }).sort().toArray();
