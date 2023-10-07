@@ -8,7 +8,7 @@
   </div>
   <div class="column login-form">
     <div class="container">
-      <form action="/login" method="post">
+      <form action="/login<% if (req.query.redirect) { %>?redirect=<%= encodeURIComponent(req.query.redirect) %><% } %>" method="post">
         <div class="field">
           <label class="label">Username</label>
           <div class="control">

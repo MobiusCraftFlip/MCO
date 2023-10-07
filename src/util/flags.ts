@@ -13,7 +13,8 @@ const joinable = {
     glocestershirePlayer: true
 } as {[key:string]: boolean }
 
-export {
+
+export =  {
     flags,
-    joinable
+    joinable,
 };

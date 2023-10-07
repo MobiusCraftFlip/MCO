@@ -11,8 +11,9 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const path = require("path");
 
-const User = require("./models/user.model");
+const User = require("./models/user.model").default;
 const dbConfig = require("./config/database.config");
+const { randomBytes } = require("crypto");
 
 // Configuration
 mongoose.connect(dbConfig.url, {
@@ -28,12 +29,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.set("view engine", "ejs");
+app.set('view options', {root: path.join(__dirname, "..","views")});
+
 app.set("views", path.join(__dirname, "..","views"));
 app.use(express.static(__dirname + "/../public"));
 
 // Passport setup
 app.use(session({
-  secret: "margherita",
+  secret: randomBytes(64).toString("base64"),
   resave: false,
   saveUninitialized: false
 }));

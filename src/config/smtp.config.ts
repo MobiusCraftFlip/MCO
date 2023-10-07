@@ -1,5 +1,4 @@
 import nodemailer, {createTransport} from "nodemailer"
-const User = require("../models/user.model")
 const config = require("../../config.json")
 
 export const transporter = nodemailer.createTransport(config.nodemailer.config)

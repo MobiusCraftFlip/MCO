@@ -1,0 +1,43 @@
+<%- include('/components/header') %>
+<div class="columns login-hero">
+  <div class="column login-form">
+    <form action="/admin/flags/create" method="post" id="form">
+      <div class="container">
+        <div class="field">
+          <label class="label">Name</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="A unique name" name="name" id="form-name">
+          </div>
+          <p class="help" id="form-name-help" hidden="true"></p>
+        </div>
+
+        <div class="field">
+          <label class="label">Description</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="Describe this flag" name="description" id="form-description">
+          </div>
+          <p class="help" id="form-username-help" hidden></p>
+        </div>
+
+        <div class="field">
+          <label class="label">Permissions</label>
+          <div class="control">
+            <input class="input" name="permissions" type="permissions" placeholder="csv permissions" id="form-permission">
+          </div>
+          <p class="help" id="form-email-help" hidden></p>
+        </div>
+        
+        <div class="field is-grouped">
+          <div class="control">
+            <input id="submit-button" value="Submit" type="submit" class="button is-link"></input>
+          </div>
+          <div class="control">
+            <button class="button">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- <script src="/js/bundle-signup.js"></script> -->
+<%- include('/components/footer') %>

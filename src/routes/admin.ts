@@ -1,18 +1,17 @@
 import { check } from "../util/permissions"
-import UserModel from "../models/user.model"
+import * as userstuff from "../models/user.model"
 import {EmailLinkModel, sendEmailLink} from "../models/emailLink.model"
 import type { Application } from "express"
 import crypto from "crypto"
 import { recaptcha, verifyRequest } from "../config/recaptcha.config"
+import { unautherisedRedirect } from "../util/express"
+import flagApp from "./flags"
 
+const UserModel = userstuff.default
 module.exports = (app: Application) => {
     app.get("/users/", async (req, res) => {
         if (!req.isAuthenticated()) {
-            return res.render("404", {
-            isAuth: req.isAuthenticated(),
-            user: req.user,
-            profile: null,
-            })
+            return unautherisedRedirect(req,res)
         }
 
         if (req.user && req.user.flags && check(req.user, "admin.users.list")) {
@@ -29,7 +28,7 @@ module.exports = (app: Application) => {
 
     app.get("/admin/password_reset_email/:user", async (req, res) => {
         if (!req.isAuthenticated() && !(await verifyRequest(req))?.hostname) {
-            return res.sendStatus(401)
+            return unautherisedRedirect(req,res)
             
         }
 
@@ -129,35 +128,59 @@ module.exports = (app: Application) => {
         user: req.user,
         recaptcha_key: process.env.RECAPTCHA_KEY
       }))
-        
-    //     let username = req.params.username
-    //     UserModel.findOne({
-    //         username
-    //     }, (err, doc) => {
-    //         if (err) throw err
-    //         if (!doc)
-    //         res.render("404", {
-    //             isAuth: req.isAuthenticated(),
-    //             user: req.user,
-    //             profile: null,
-    //         })
-    //         else {
-    //         if (!(req.user.flags.includes("sudo") || req.user.username == doc.username)) {
-    //             return res.render("404", {
-    //             isAuth: req.isAuthenticated(),
-    //             user: req.user,
-    //             profile: null,
-    //             })
-    //         }
-    //         console.log(doc)
-    //         res.render("user/edit", {
-    //             isAuth: req.isAuthenticated(),
-    //             user: req.user,
-    //             profile: doc,
-    //             isRoot: req.user.flags.includes("sudo")
-    //         })
-    //         }
-    //     })
-    // })
-    
+
+    app.post("/user/:username/edit", async (req, res) => {
+        console.log(req.body)
+        if (!req.isAuthenticated()) {
+            return res.sendStatus(404)
+            
+        }
+
+        const sudo = check(req.user, "admin.user.edit.others")
+        if (!(req.user.username == req.params.username || sudo)) {
+
+            return res.sendStatus(401)
+        }
+
+        const user = await UserModel.findOne({username: req.params.username}).exec()
+
+        if (!user) {
+            return res.render("404", {
+                isAuth: req.isAuthenticated(),
+                user: req.user,
+                profile: null,
+            })
+        }
+
+        console.log("AUTHED")
+        const editable = sudo ? userstuff.sudo_editable : userstuff.user_editable
+
+        for (let key in editable) {
+            if (req.body[key] && typeof(req.body[key]) == "string") {
+                if (key == "flags") {
+                    user.flags = req.body.flags.split(",")
+                } else {
+                    user[key] = req.body[key]
+                }
+            }
+        }
+        await user.save()
+        res.redirect("/user/"+ req.params.username )
+    })
+    app.post("/user/:username/delete", async (req, res) => {
+        console.log(req.body)
+        if (!req.isAuthenticated()) {
+            return res.sendStatus(401)
+            
+        }
+
+        if (!check(req.user, "admin.user.delete.others")) {
+            return res.sendStatus(401)
+        }
+
+        await UserModel.deleteOne({username: req.params.username}).exec()
+        res.status(200)
+    })
+
+    flagApp(app)
 }

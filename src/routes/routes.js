@@ -1,4 +1,6 @@
 const {recaptcha, postMiddleware} = require("../config/recaptcha.config")
+const { check } = require("../util/permissions")
+import * as userStuff from "../models/user.model"
 
 module.exports = (app, passport, UserModel) => {
 
@@ -21,14 +23,21 @@ module.exports = (app, passport, UserModel) => {
     message: req.flash("loginMessage"),
     isAuth: req.isAuthenticated(),
     user: req.user,
-    recaptcha_key: process.env.RECAPTCHA_KEY
+    recaptcha_key: process.env.RECAPTCHA_KEY,
+    req
   }))
 
   app.post("/login", recaptcha.middleware.verify, postMiddleware, passport.authenticate("local-login", {
-    successRedirect: "/profile", // redirect to the secure profile section
     failureRedirect: "/login", // redirect back to the signup page if there is an error
     failureFlash: true // allow flash messages
-  }))
+  }), (req, res) => {
+    console.log(req.query.redirect)
+    if (req.query.redirect) {
+      return res.redirect(req.query.redirect)
+    } else {
+      return res.redirect("/profile")
+    }
+  })
 
   // Signup
   app.get("/signup", (req, res) => res.render("signup", {
@@ -73,7 +82,8 @@ module.exports = (app, passport, UserModel) => {
         isAuth: req.isAuthenticated(),
         user: req.user,
         profile: doc,
-        isRoot: req.isAuthenticated() ? doc.username === req.user.username : false
+        isRoot: req.isAuthenticated() ? doc.username === req.user.username : false,
+        check,
       })
     }
   })
@@ -109,7 +119,8 @@ module.exports = (app, passport, UserModel) => {
         isAuth: req.isAuthenticated(),
         user: req.user,
         profile: doc,
-        isRoot: req.user.flags.includes("sudo")
+        isRoot: check(req.user, "admin.user.edit.others"),
+        userStuff,
       })
     }
   })
@@ -122,7 +133,7 @@ module.exports = (app, passport, UserModel) => {
 
   app.get("/check-username-availability", (req, res) => {
     UserModel.find({}).then(users => {
-      let usernames = users.map(val => val.username)
+      let usernames = users.map(val => val.username.toLowerCase())
       res.json(usernames)
     })
     .catch(err => {

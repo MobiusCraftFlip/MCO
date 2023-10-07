@@ -7,6 +7,7 @@
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./scripts/app.js":
@@ -25,7 +26,7 @@ eval("__webpack_require__(/*! ./navbar */ \"./scripts/navbar.js\");\n\n//# sourc
   \***************************/
 /***/ (() => {
 
-eval("document.getElementById(\"navbar-ham\").addEventListener(\"click\", () => {\n  let menu = document.getElementById(\"navbar-ham-menu\");\n  let button = document.getElementById(\"navbar-ham\");\n  menu.classList.toggle(\"is-active\");\n  button.classList.toggle(\"is-active\");\n});\n\n//# sourceURL=webpack://express-auth-template/./scripts/navbar.js?");
+eval("document.getElementById(\"navbar-ham\").addEventListener(\"click\",()=>{let menu=document.getElementById(\"navbar-ham-menu\");let button=document.getElementById(\"navbar-ham\");menu.classList.toggle(\"is-active\");button.classList.toggle(\"is-active\")});\n\n//# sourceURL=webpack://express-auth-template/./scripts/navbar.js?");
 
 /***/ })
 

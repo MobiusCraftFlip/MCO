@@ -1,5 +1,5 @@
 const LocalStategy = require("passport-local").Strategy
-const User = require("../models/user.model")
+const User = require("../models/user.model").default
 const {transporter} = require("./smtp.config")
 
 module.exports = passport => {
@@ -12,17 +12,14 @@ module.exports = passport => {
   // Signup
   passport.use("local-signup", new LocalStategy({
     passReqToCallback: true
-  }, (req, username, password, done) => {
+  }, async (req, username, password, done) => {
     let newUser = new User({
       username: username.toLocaleLowerCase(),
       name: req.body.name,
       email: req.body.email
     })
     newUser.password = newUser.generateHash(password)
-    newUser.save(err => {
-      if (err) throw err
-      return done(null, newUser)
-    })
+    await newUser.save()
 
     const info = transporter.sendMail({
       from: "\"MCO\" <mco-noreply@mobius.ovh>", // sender address
@@ -33,6 +30,7 @@ module.exports = passport => {
       .then((message) => {
         console.log("Message sent: %s", message.messageId)
       })
+    return done(null, newUser)
   }))
 
   // Login

@@ -1,0 +1,57 @@
+<%- include('../../components/header') %>
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+          <p class="title is-4">Flags</p>
+          <br />
+          <table class="table">
+            <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Owner</th>
+                  <th>Permissions</th>
+                </tr>
+              </thead>
+              <tbody>
+            <% for(var i=0; i<flags.length; i++) { %>
+                <tr>
+                    <!-- <th>
+                        <%= flags[i]._id %> 
+                    </th> -->
+                    <th>
+                        <a href="./user/<%= flags[i].name %>"><%= flags[i].name %> </a>
+                    </th>
+                    <th>
+                        <%= flags[i].description%> 
+                    </th>
+                    <th>
+                        <%= owners[flags[i].owner] %> 
+                    </th>
+                    <th>
+                        <%= flags[i].permissions.join(", ") %> 
+                    </th>
+                    <th>
+                        
+                        <form method="post" action="/admin/flags/<%= flags[i].name %>/delete" onsubmit="return confirm('Do you really want delete the user <%= flags[i].username %>?')">
+                          <a class="button is-light is-small" href="/admin/flags/<%= flags[i].name %>/edit">Edit</a>
+                          <input id="submit-button" value="Delete" type="submit" class="button is-danger is-small"></input>
+                        </form>
+                      </th>
+                </tr>
+            <% } %>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <script src="/js/bundle-signup.js"></script> -->
+<!-- confirm() -->
+<%- include('../../components/footer') %>

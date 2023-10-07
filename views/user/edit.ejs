@@ -6,29 +6,47 @@
         <div class="media-left">
         </div>
         <div class="media-content">
-            <input class="input title is-4" type="text" value="<%= profile.name %>">
+          <input class="input title is-4" type="text" value="<%= profile.name %>">
           <p class="subtitle is-6">Username: <%= profile.username %></p>
-          <form>
+          <form method="post" action="/user/<%= profile.username %>/edit">
             <% if(isRoot){ %>
                 <label class="label">Flags</label>
                 <div class="control">
                     <!-- Place logic for editing profile here -->
-                    <input class="input" type="text"  value="<%= profile.flags.join(',') %>"></input>
+                    <input class="input" type="text" name="flags" value="<%= profile.flags.join(',') %>"></input>
                 </div>
-            <% } %>
-          </form>
-          <br />
-          <% if(!isRoot){ %>
+                <% Object.values(userStuff.sudo_editable).forEach(element => { %>
+                 <%- element(profile) %>
+
+                <% }) %>
+                <%= JSON.stringify(Object.keys(userStuff.sudo_editable)) %>
+                
+            <% } else { %>
+              <% Object.values(userStuff.user_editable).forEach(element => { %>
+                <%- element(profile) %>
+  
+               <% }) %>
+               <br />
           <p class="title is-5">Flags</p>
           <ul>
+            
             <% for(var i=0; i<profile.flags.length; i++) { %>
                 <li>
                     <%= profile.flags[i] %>
                 </li>
             <% } %>
           </ul>
+            <% } %>
+            <div class="control">
+              <input id="submit-button" value="Update" type="submit" class="button is-link"></input>
+            </div>
+            <div class="control">
+              <a class="button" href="/user/<%= profile.username %>">Cancel</a>
+            </div>
+          </form>
+          <br />
+          <% if(!isRoot){ %>
           <% } %>
-          <!-- <p><%=profile.flags.join(", ") %></p> -->
         </div>
       </div>
     </div>

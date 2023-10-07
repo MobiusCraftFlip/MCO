@@ -36,8 +36,13 @@
                         <%= profiles[i].flags.join(", ") %> 
                     </th>
                     <th>
-                        <a class="button is-danger is-small" href="/admin/password_reset_email/<%= profiles[i].username %>?redirect=<%= encodeURIComponent(`${req.protocol}://${req.get('host')}${req.originalUrl}`) %>">Password Reset</a>
-                    </th>
+                        
+                        <form method="post" action="/user/<%= profiles[i].username %>/delete" onsubmit="return confirm('Do you really want delete the user <%= profiles[i].username %>?')">
+                          <a class="button is-light is-small" href="/user/<%= profiles[i].username %>/edit">Edit</a>
+                          <a class="button is-danger is-small" href="/admin/password_reset_email/<%= profiles[i].username %>?redirect=<%= encodeURIComponent(`${req.protocol}://${req.get('host')}${req.originalUrl}`) %>">Password Reset</a>
+                          <input id="submit-button" value="Delete" type="submit" class="button is-danger is-small"></input>
+                        </form>
+                      </th>
                 </tr>
             <% } %>
               </tbody>
@@ -48,5 +53,6 @@
   </div>
 </div>
 
-
+<script src="/js/bundle-signup.js"></script>
+<!-- confirm() -->
 <%- include('../components/footer') %>

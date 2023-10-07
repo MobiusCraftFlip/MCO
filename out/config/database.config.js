@@ -1,7 +1,2 @@
-"use strict";
-module.exports = {
-    url: process.env.DB_URL
-} // 5Nak5uTBuzEdftTV
-;
-
+"use strict";module.exports={url:process.env.DB_URL};
 //# sourceMappingURL=database.config.js.map

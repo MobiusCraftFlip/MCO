@@ -8,6 +8,26 @@ declare global {
             recaptcha?: RecaptchaResponseV2
         }
     }
+
+    namespace NodeJS {
+        interface ProcessEnv {
+          NODE_ENV: 'development' | 'production',
+          PORT?: string;
+          PWD: string;
+          MOKORE_URI: string,
+          DB_URL: string,
+          ROBLOX_CLIENT_ID: string,
+          ROBLOX_CLIENT_SECRET: string,
+          BASEURL: string,
+          PRIVACY_URL: string,
+          TOS_URL: string,
+          DISCORD_CLIENT_ID: string,
+          DISCORD_CLIENT_SECRET: string,
+          RECAPTCHA_KEY: string,
+          RECAPTCHA_SECRET: string,
+          RECAPTCHA: string,
+        }
+      }
 }
 
 declare namespace Express {
