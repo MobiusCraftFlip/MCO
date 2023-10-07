@@ -2,7 +2,8 @@ import mongoose, { Schema, Types } from "mongoose"
 import { transporter } from "../config/smtp.config"
 import UserModel from "./user.model"
 
-import * as flaggs from "../util/flags"
+
+const { refreshFlags } = require("../util/flags");
 
 export interface IFlag {
     name: string,
@@ -19,7 +20,7 @@ let flagSchema = new Schema<IFlag>({
 })
 
 flagSchema.post('save', function(doc, next) {
-    flaggs.refreshFlags()
+    refreshFlags()
     next()
   });
 
