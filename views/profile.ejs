@@ -34,6 +34,8 @@
                 <p>Discord userid: <%= profile.discord_id %></p>
                 <p>Discord Displayname: <%= profile.discord_displayname %></p>
               <% } %>
+              <%= JSON.stringify(profile.flags.map(f => flags.flags[f])) %>
+              <%= JSON.stringify(flags.flags) %>
         </div>
       </div>
     </div>

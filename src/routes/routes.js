@@ -1,7 +1,7 @@
 const {recaptcha, postMiddleware} = require("../config/recaptcha.config")
 const { check } = require("../util/permissions")
 import * as userStuff from "../models/user.model"
-
+const flags = require("../util/flags")
 module.exports = (app, passport, UserModel) => {
 
   require("./admin")(app, passport, UserModel)
@@ -84,6 +84,7 @@ module.exports = (app, passport, UserModel) => {
         profile: doc,
         isRoot: req.isAuthenticated() ? doc.username === req.user.username : false,
         check,
+        flags
       })
     }
   })

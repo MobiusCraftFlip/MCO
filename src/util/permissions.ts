@@ -1,5 +1,5 @@
 import wcmatch from 'wildcard-match'
-import { flags } from './flags';
+import flags from './flags';
 
 
 export function check(user:any , permission:string) {
@@ -14,7 +14,7 @@ export function check(user:any , permission:string) {
 
 export function flagHasPermission(flag: string, permission: string) {
     let yes = false
-    flags[flag]?.forEach(perm => {
+    flags.flags[flag]?.forEach(perm => {
         if (wcmatch(perm)(permission)) {
             yes = true
             

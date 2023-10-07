@@ -62,7 +62,7 @@ module.exports = (app: Application) => {
     })
 
     app.get("/admin/password-reset-redirect/:secret", async (req, res) => {
-        
+
         const emailLink = await EmailLinkModel.findOne({id: req.params.secret}).exec()
         if (!emailLink ) {
             return res.render("404", {
@@ -89,7 +89,6 @@ module.exports = (app: Application) => {
     app.post("/admin/change-password/:secret", async (req, res) => {
         if (!req.isAuthenticated() && !(await verifyRequest(req))) {
             return res.sendStatus(401)
-            
         }
 
         if (!req.body.password) {
@@ -133,7 +132,6 @@ module.exports = (app: Application) => {
         console.log(req.body)
         if (!req.isAuthenticated()) {
             return res.sendStatus(404)
-            
         }
 
         const sudo = check(req.user, "admin.user.edit.others")
@@ -171,7 +169,6 @@ module.exports = (app: Application) => {
         console.log(req.body)
         if (!req.isAuthenticated()) {
             return res.sendStatus(401)
-            
         }
 
         if (!check(req.user, "admin.user.delete.others")) {
