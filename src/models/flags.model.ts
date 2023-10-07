@@ -9,7 +9,7 @@ export interface IFlag {
     name: string,
     description: string,
     owner: Types.ObjectId,
-    permissions: string[]
+    permissions: string[],
 }
 
 let flagSchema = new Schema<IFlag>({

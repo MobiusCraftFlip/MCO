@@ -87,6 +87,8 @@ let userSchema = new _mongoose.Schema({
     discord_id: String,
     discord_username: String,
     discord_displayname: String,
+    disabled: Boolean,
+    disabledReason: String,
     flags: [
         String
     ]

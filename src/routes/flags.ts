@@ -114,6 +114,6 @@ export default (app: Application) => {
         }
 
         await FlagModel.deleteOne({name: req.params.flag}).exec()
-        res.status(200)
+        res.redirect("/admin/flags/")
     })
 }

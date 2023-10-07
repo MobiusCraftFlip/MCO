@@ -1,11 +1,11 @@
 import { RecaptchaResponseV2 } from "express-recaptcha/dist/interfaces"
-
+import type {IUserSchema} from "./models/user.model"
 declare global {
     namespace Express {
         interface Request {
-            isAuthenticated: () => boolean
-            user: IUserSchema
-            recaptcha?: RecaptchaResponseV2
+            // isAuthenticated: () => boolean
+            // user: IUserSchema
+            // recaptcha?: RecaptchaResponseV2
         }
     }
 
@@ -26,6 +26,8 @@ declare global {
           RECAPTCHA_KEY: string,
           RECAPTCHA_SECRET: string,
           RECAPTCHA: string,
+          REDIS_URL: string,
+          SESSION_SECRET: string,
         }
       }
 }

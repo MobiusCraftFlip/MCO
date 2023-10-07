@@ -18,6 +18,9 @@ export interface IUserSchema {
   discord_username: string,
   discord_displayname: string,
 
+  disabled: boolean,
+  disabledReason: string,
+
   flags: string[],
 }
 
@@ -36,6 +39,9 @@ let userSchema = new Schema<IUserSchema>({
   discord_id: String,
   discord_username: String,
   discord_displayname: String,
+
+  disabled: Boolean,
+  disabledReason: String,
 
   flags: [String],
 })

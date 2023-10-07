@@ -1,4 +1,9 @@
 require("dotenv").config()
+
+import RedisStore from "connect-redis"
+import session from "express-session"
+import {createClient} from "redis"
+
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 8080;
@@ -8,7 +13,6 @@ const flash = require("connect-flash");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const session = require("express-session");
 const path = require("path");
 
 const User = require("./models/user.model").default;
@@ -37,11 +41,26 @@ app.set('view options', {root: path.join(__dirname, "..","views")});
 app.set("views", path.join(__dirname, "..","views"));
 app.use(express.static(__dirname + "/../public"));
 
+let redisClient = createClient({
+  url: process.env.REDIS_URL
+})
+redisClient.connect().catch(console.error)
+
+// Initialize store.
+let redisStore = new RedisStore({
+  client: redisClient,
+  prefix: "mco:",
+})
+
 // Passport setup
 app.use(session({
-  secret: randomBytes(64).toString("base64"),
+  store: redisStore,
+  secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 60*60*1000,
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());

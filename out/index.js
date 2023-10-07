@@ -1,4 +1,15 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+const _connectredis = /*#__PURE__*/ _interop_require_default(require("connect-redis"));
+const _expresssession = /*#__PURE__*/ _interop_require_default(require("express-session"));
+const _redis = require("redis");
+function _interop_require_default(obj) {
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
+}
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -9,7 +20,6 @@ const flash = require("connect-flash");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const session = require("express-session");
 const path = require("path");
 const User = require("./models/user.model").default;
 const dbConfig = require("./config/database.config");
@@ -35,11 +45,24 @@ app.set('view options', {
 });
 app.set("views", path.join(__dirname, "..", "views"));
 app.use(express.static(__dirname + "/../public"));
+let redisClient = (0, _redis.createClient)({
+    url: process.env.REDIS_URL
+});
+redisClient.connect().catch(console.error);
+// Initialize store.
+let redisStore = new _connectredis.default({
+    client: redisClient,
+    prefix: "mco:"
+});
 // Passport setup
-app.use(session({
-    secret: randomBytes(64).toString("base64"),
+app.use((0, _expresssession.default)({
+    store: redisStore,
+    secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 60 * 60 * 1000
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());

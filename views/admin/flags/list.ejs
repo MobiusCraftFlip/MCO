@@ -8,6 +8,7 @@
         <div class="media-content">
           <p class="title is-4">Flags</p>
           <br />
+          <a class="button is-primary" href="/admin/flags/create">Edit Profile</a>
           <table class="table">
             <thead>
                 <tr>
@@ -37,7 +38,7 @@
                     </th>
                     <th>
                         
-                        <form method="post" action="/admin/flags/<%= flags[i].name %>/delete" onsubmit="return confirm('Do you really want delete the user <%= flags[i].username %>?')">
+                        <form method="post" action="/admin/flags/<%= flags[i].name %>/delete" onsubmit="return confirm('Do you really want delete the flag <%= flags[i].name %>?')">
                           <a class="button is-light is-small" href="/admin/flags/<%= flags[i].name %>/edit">Edit</a>
                           <input id="submit-button" value="Delete" type="submit" class="button is-danger is-small"></input>
                         </form>
