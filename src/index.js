@@ -14,13 +14,13 @@ const path = require("path");
 const User = require("./models/user.model").default;
 const dbConfig = require("./config/database.config");
 const { randomBytes } = require("crypto");
-const { refreshFlags } = require("./util/flags");
+const { refreshFlags } = require("./models/flags.model");
 
 // Configuration
 mongoose.connect(dbConfig.url, {
   useNewUrlParser: true
 }).then(() => {
-  refreshFlags()
+  refreshFlags
 })
 require("./config/passport.config")(passport);
 

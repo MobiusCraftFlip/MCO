@@ -16,7 +16,7 @@
   \************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("__webpack_require__(/*! ./navbar */ \"./scripts/navbar.js\");\n\n//# sourceURL=webpack://express-auth-template/./scripts/app.js?");
+eval("\n__webpack_require__(/*! ./navbar */ \"./scripts/navbar.js\");\n\n\n//# sourceURL=webpack://express-auth-template/./scripts/app.js?");
 
 /***/ }),
 
@@ -26,7 +26,7 @@ eval("__webpack_require__(/*! ./navbar */ \"./scripts/navbar.js\");\n\n//# sourc
   \***************************/
 /***/ (() => {
 
-eval("document.getElementById(\"navbar-ham\").addEventListener(\"click\",()=>{let menu=document.getElementById(\"navbar-ham-menu\");let button=document.getElementById(\"navbar-ham\");menu.classList.toggle(\"is-active\");button.classList.toggle(\"is-active\")});\n\n//# sourceURL=webpack://express-auth-template/./scripts/navbar.js?");
+eval("\ndocument.getElementById(\"navbar-ham\").addEventListener(\"click\", ()=>{\n    let menu = document.getElementById(\"navbar-ham-menu\");\n    let button = document.getElementById(\"navbar-ham\");\n    menu.classList.toggle(\"is-active\");\n    button.classList.toggle(\"is-active\");\n});\n\n\n//# sourceURL=webpack://express-auth-template/./scripts/navbar.js?");
 
 /***/ })
 
