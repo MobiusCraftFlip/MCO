@@ -1,10 +1,17 @@
 import { createClient } from "redis"
 
 let redisClient = createClient({
-    url: process.env.REDIS_URL
+    socket: {
+        path: process.env.REDIS_SOCKET
+    }
 })
-redisClient.connect().catch(console.error)
+console.log(process.env.REDIS_URL)
 
-redisClient.on('error', err => console.log('Redis Client Error', err));
+redisClient.connect().catch(console.error).then((v) => {
+    console.log(v)
+})
+
+redisClient.on('error', err => {
+    console.log(JSON.stringify(redisClient, undefined, "\t")); console.log('Redis Client Error', err)});
 
 export default redisClient
