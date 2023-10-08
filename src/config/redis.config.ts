@@ -5,7 +5,7 @@ let redisClient = createClient({
         path: process.env.REDIS_SOCKET
     }
 })
-console.log(process.env.REDIS_URL)
+console.log(process.env)
 
 redisClient.connect().catch(console.error).then((v) => {
     console.log(v)
