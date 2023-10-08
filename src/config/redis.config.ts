@@ -1,5 +1,7 @@
 import { createClient } from "redis"
 
+require("dotenv").config()
+
 let redisClient = createClient({
     socket: {
         path: process.env.REDIS_SOCKET
