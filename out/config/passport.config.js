@@ -45,8 +45,9 @@ module.exports = (passport)=>{
     }, async (req, username, password, done)=>{
         const key = `mco-login-attempts:${req.ip.replaceAll(":", ".")}-${encodeURIComponent(username.trim().toLowerCase)}`;
         console.log(req.ip);
-        if (parseInt(await _redisconfig.default.get(key)) >= 5) {
-            return done(null, false, req.flash("loginMessage", "Woah! Slow down there buddy")) // create the loginMessage and save it to session as flashdata
+        const attempts = parseInt(await _redisconfig.default.get(key));
+        if (attempts >= 5) {
+            return done(null, false, req.flash("loginMessage", "Woah! Slow down there buddy, please wait a couple minutes before trying again")) // create the loginMessage and save it to session as flashdata
             ;
         }
         const user = await _usermodel.default.findOne({

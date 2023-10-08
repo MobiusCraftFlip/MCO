@@ -12,6 +12,7 @@ function _interop_require_default(obj) {
 }
 require("dotenv").config();
 const express = require("express");
+require('express-async-errors');
 const app = express();
 const port = process.env.PORT || 8080;
 const mongoose = require("mongoose");
