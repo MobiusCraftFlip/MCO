@@ -7,6 +7,7 @@ declare global {
             // user: IUserSchema
             // recaptcha?: RecaptchaResponseV2
         }
+        interface User {}
     }
 
     namespace NodeJS {
@@ -37,5 +38,9 @@ declare namespace Express {
         isAuthenticated: () => boolean
         user: IUserSchema
         recaptcha?: RecaptchaResponseV2
+        flash: (string, string) => void
+    }
+    export interface User {
+        id: string,
     }
 }

@@ -2,9 +2,10 @@ require("dotenv").config()
 
 import RedisStore from "connect-redis"
 import session from "express-session"
-import {createClient} from "redis"
+import redisClient from "./config/redis.config";
 
 const express = require("express");
+require('express-async-errors');
 const app = express();
 const port = process.env.PORT || 8080;
 const mongoose = require("mongoose");
@@ -38,13 +39,12 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs");
 app.set('view options', {root: path.join(__dirname, "..","views")});
 
+app.set("trust proxy", true)
+
 app.set("views", path.join(__dirname, "..","views"));
 app.use(express.static(__dirname + "/../public"));
 
-let redisClient = createClient({
-  url: process.env.REDIS_URL
-})
-redisClient.connect().catch(console.error)
+
 
 // Initialize store.
 let redisStore = new RedisStore({

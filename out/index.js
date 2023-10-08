@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 const _connectredis = /*#__PURE__*/ _interop_require_default(require("connect-redis"));
 const _expresssession = /*#__PURE__*/ _interop_require_default(require("express-session"));
-const _redis = require("redis");
+const _redisconfig = /*#__PURE__*/ _interop_require_default(require("./config/redis.config"));
 function _interop_require_default(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj
@@ -43,15 +43,12 @@ app.set("view engine", "ejs");
 app.set('view options', {
     root: path.join(__dirname, "..", "views")
 });
+app.set("trust proxy", true);
 app.set("views", path.join(__dirname, "..", "views"));
 app.use(express.static(__dirname + "/../public"));
-let redisClient = (0, _redis.createClient)({
-    url: process.env.REDIS_URL
-});
-redisClient.connect().catch(console.error);
 // Initialize store.
 let redisStore = new _connectredis.default({
-    client: redisClient,
+    client: _redisconfig.default,
     prefix: "mco:"
 });
 // Passport setup
