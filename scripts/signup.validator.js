@@ -54,7 +54,15 @@ if (nameInput) {
       usernameInputHelp.innerText = "Enter a username";
       validator.username = false;
     } else {
-      if (userExists(value)) {
+      if (!(/^[a-z]([a-z0-9]|_)+$/).test(value.toLowerCase().trim())) {
+        markNegative(usernameInput);
+        markNegative(usernameInputHelp);
+        usernameInputHelp.hidden = false;
+        usernameInputHelp.innerText = "Usernames must only contain letters, numbers and underscores";
+        validator.username = false;
+
+      }
+      else if (userExists(value)) {
         markNegative(usernameInput);
         markNegative(usernameInputHelp);
         usernameInputHelp.hidden = false;

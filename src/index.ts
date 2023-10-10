@@ -3,12 +3,11 @@ require("dotenv").config()
 import RedisStore from "connect-redis"
 import session from "express-session"
 import redisClient from "./config/redis.config";
-
-const express = require("express");
+import mongoose from "mongoose"
+import express from "express"
 require('express-async-errors');
 const app = express();
 const port = process.env.PORT || 8080;
-const mongoose = require("mongoose");
 const passport = require("passport");
 const flash = require("connect-flash");
 const morgan = require("morgan");
@@ -23,9 +22,11 @@ const { refreshFlags } = require("./models/flags.model");
 
 // Configuration
 mongoose.connect(dbConfig.url, {
-  useNewUrlParser: true
+  // useNewUrlParser: true
 }).then(() => {
   refreshFlags
+}).catch((error) => {
+  console.warn(error)
 })
 require("./config/passport.config")(passport);
 
@@ -44,7 +45,11 @@ app.set("trust proxy", true)
 app.set("views", path.join(__dirname, "..","views"));
 app.use(express.static(__dirname + "/../public"));
 
-
+app.use((req,res,next) => {
+  const key = `access:${req.ip.replaceAll(":", ".")}:${encodeURIComponent(req.url)}`
+  redisClient.multi().incr(key).expire(key, 2000).exec()
+  next()
+})
 
 // Initialize store.
 let redisStore = new RedisStore({

@@ -19,8 +19,12 @@ module.exports = (passport: typeof Passport) => {
   passport.use("local-signup", new LocalStategy({
     passReqToCallback: true
   }, async (req, username, password, done) => {
+    username = username.trim().toLowerCase()
+    if (!((/^[a-z]([a-z0-9]|_)+$/).test(username))) {
+      return done(null, false, req.flash("loginMessage", "Invalid username")) 
+    }
     let newUser = new User({
-      username: username.toLocaleLowerCase(),
+      username: username,
       name: req.body.name,
       email: req.body.email
     })
@@ -43,7 +47,7 @@ module.exports = (passport: typeof Passport) => {
   passport.use("local-login", new LocalStategy({
     passReqToCallback: true
   }, async (req: Request, username: string, password: string, done) => {
-    const key = `mco-login-attempts:${req.ip.replaceAll(":", ".")}-${encodeURIComponent(username.trim().toLowerCase)}`
+    const key = `mco-login-attempts:${req.ip.replaceAll(":", ".")}-${encodeURIComponent(username)}`
     console.log(req.ip)
     const attempts = parseInt(await redisClient.get(key))
     if (attempts >= 5) {
@@ -56,6 +60,9 @@ module.exports = (passport: typeof Passport) => {
     if (!user) {
       return done(null, false, req.flash("loginMessage", "No user found."))
     }
+    if (user.disabled) {
+      return done(null, false, req.flash("loginMessage", `User is disabled: ${user.disabledReason}`))
+    }
     if (!user.validatePassword(password)) {
       redisClient.multi().incr(key).expire(key, 120).exec()
         
@@ -63,6 +70,5 @@ module.exports = (passport: typeof Passport) => {
     }
     // all is well, return successful user
     return done(null, user)
-    
   }))
 }

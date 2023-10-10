@@ -19,7 +19,6 @@
                  <%- element(profile) %>
 
                 <% }) %>
-                <%= JSON.stringify(Object.keys(userStuff.sudo_editable)) %>
                 
             <% } else { %>
               <% Object.values(userStuff.user_editable).forEach(element => { %>
@@ -37,15 +36,27 @@
             <% } %>
           </ul>
             <% } %>
+            <label class="label">Actions</label>
             <div class="control">
               <input id="submit-button" value="Update" type="submit" class="button is-link"></input>
+              <a class="button" href="/user/<%= profile.username %>">Cancel</a>    
             </div>
-            <div class="control">
-              <a class="button" href="/user/<%= profile.username %>">Cancel</a>
+            <div class="control">       
             </div>
           </form>
           <br />
-          <% if(!isRoot){ %>
+          <% if(isRoot){ %>
+            <form method="post" action="/user/<%= profile.username %>/delete" onsubmit="return confirm('Do you really want delete the user <%= profile.username %>?')">
+              <input id="submit-button" value="Delete" type="submit" class="button is-danger"></input>
+              <% if (!profile.disabled) { %>
+                <a id="user-disable-button" value="Diable" class="button is-danger" href="/user/<%= profile.username %>/disable">Disable</a>
+              <% } else { %>
+                <a id="user-enable-button" value="Enable" class="button is-danger"  href="/user/<%= profile.username %>/enable">Enable</a>
+              <% } %>
+              <a class="button is-link" href="/users/">Back</a>
+              
+            </form>
+            
           <% } %>
         </div>
       </div>

@@ -1,0 +1,73 @@
+<%- include('/components/header') %>
+<div class="columns login-hero">
+  <div class="column login-form">
+    <form action="/games/<%= game._id %>/olines/request" method="post" id="form">
+        <h1 class="title is-2"><%= game.roblox_name %> Admin Request</h1>
+        <p>
+          Once requested, it will be approved by your team lead and then activated by the Developers/Senior Administration
+        </p>
+      <div class="container">
+        <div class="field">
+            <label class="label">Team</label>
+            <div class="select">
+              <select name="team">
+                <% game.teams.forEach((display, value) => { %>
+                    <option value="<%= value %>"><%= display %></option>
+                <% }) %>
+              </select>
+            </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Admin Level</label>
+          <div class="select">
+            <select name="admin_level">
+                <% game.admin_levels.forEach((display, value) => { %>
+                    <option value="<%= value %>"><%= display[0] %></option>
+                <% }) %>
+            </select>
+          </div>
+        </div>
+
+        
+        <label class="label">Start Date</label>
+        <input type="date" id="start" name="start">
+        <label class="label">End Date (maximum 2 years from start)</label>
+        <input type="date" id="expiry" name="expiry">
+
+        <div class="field">
+          <label class="label">Who asked you to fill this out?</label>
+          <div class="control">
+            <input class="input" name="requestor" type="requestor" placeholder="Requestor" id="form-requestor">
+          </div>
+        </div>
+
+        
+        <div class="field">
+          <label class="label">Why is this required</label>
+          <div class="control">
+            <textarea class="textarea" name="whyrequired" type="joinable" placeholder="Why is this required?" id="whyrequired" ></textarea>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Any Other Info</label>
+          <div class="control">
+            <textarea class="input" name="otherinfo" type="otherinfo" placeholder="Other Info" id="form-otherinfo"></textarea>
+          </div>
+        </div>
+        
+        <div class="field is-grouped">
+          <div class="control">
+            <input id="submit-button" value="Submit" type="submit" class="button is-link"></input>
+          </div>
+          <div class="control">
+            <button class="button">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- <script src="/js/bundle-signup.js"></script> -->
+<%- include('/components/footer') %>

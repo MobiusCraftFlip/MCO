@@ -10,13 +10,17 @@ export interface IFlag {
     description: string,
     owner: Types.ObjectId,
     permissions: string[],
+    joinable: boolean,
+    joinCodes: string[],
 }
 
 let flagSchema = new Schema<IFlag>({
     name: String,
     description: String,
     owner: Types.ObjectId,
-    permissions: [String]
+    permissions: [String],
+    joinable: Boolean,
+    joinCodes: [String],
 })
 
 export const refreshFlags = async () => {

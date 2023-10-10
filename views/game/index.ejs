@@ -1,0 +1,48 @@
+<%- include('/components/header') %>
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+          <p class="title is-2"><%= game.roblox_name %></p>
+          <br />
+          <div class="container">
+            <p class="title is-4">Quick Links</p>
+            <a href="olines/request" class="button">Request Admin</a>
+            <a href="olines/" class="button">Admins</a>
+
+          </div>
+        <br />
+          <p class="title is-4">Your Current Roles:</p>
+          <ul>
+            <!-- <%= req.user._id %>
+            <%= game.OLines %> -->
+          <% game.OLines.filter((o) => o.user.equals(req.user._id)).forEach((OLine) => { %>
+            <b><%= OLine.active ? "Active" : "Not Active" %></b>
+            <li>
+            <i><%= game.admin_levels.get(OLine.admin_level)[0] %>,</i>
+            <i><%= game.teams.get(OLine.team) %>,</i>
+            Dates:
+            <%= OLine.start + "->" + OLine.expiry %>
+            <br />
+            <% if (OLine.approved) { %>
+                Approved By <%= OLine.approver.username %> on <%= OLine.approve_date.toISOString().substring(0, 10) %>
+            <% } %>
+            <% if (OLine.active) { %>
+                <br />
+                Activated by <%= OLine.activeator.username %> on <%= OLine.active_date.toISOString().substring(0, 10) %>
+            <% } %>
+            </li>
+            <br />
+          <% }) %>
+        </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- confirm() -->
+<%- include('/components/footer') %>

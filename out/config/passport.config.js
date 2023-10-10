@@ -22,8 +22,12 @@ module.exports = (passport)=>{
     passport.use("local-signup", new _passportlocal.Strategy({
         passReqToCallback: true
     }, async (req, username, password, done)=>{
+        username = username.trim().toLowerCase();
+        if (!/^[a-z]([a-z0-9]|_)+$/.test(username)) {
+            return done(null, false, req.flash("loginMessage", "Invalid username"));
+        }
         let newUser = new _usermodel.default({
-            username: username.toLocaleLowerCase(),
+            username: username,
             name: req.body.name,
             email: req.body.email
         });
@@ -43,7 +47,7 @@ module.exports = (passport)=>{
     passport.use("local-login", new _passportlocal.Strategy({
         passReqToCallback: true
     }, async (req, username, password, done)=>{
-        const key = `mco-login-attempts:${req.ip.replaceAll(":", ".")}-${encodeURIComponent(username.trim().toLowerCase)}`;
+        const key = `mco-login-attempts:${req.ip.replaceAll(":", ".")}-${encodeURIComponent(username)}`;
         console.log(req.ip);
         const attempts = parseInt(await _redisconfig.default.get(key));
         if (attempts >= 5) {
@@ -57,6 +61,9 @@ module.exports = (passport)=>{
         // req.flash is the way to set flashdata using connect-flash
         if (!user) {
             return done(null, false, req.flash("loginMessage", "No user found."));
+        }
+        if (user.disabled) {
+            return done(null, false, req.flash("loginMessage", `User is disabled: ${user.disabledReason}`));
         }
         if (!user.validatePassword(password)) {
             _redisconfig.default.multi().incr(key).expire(key, 120).exec();

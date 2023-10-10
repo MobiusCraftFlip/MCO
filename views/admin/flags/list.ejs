@@ -6,15 +6,19 @@
         <div class="media-left">
         </div>
         <div class="media-content">
-          <p class="title is-4">Flags</p>
+          <p class="title is-2">Flags</p>
           <br />
-          <a class="button is-primary" href="/admin/flags/create">Edit Profile</a>
-          <table class="table">
+          <div class="container">
+            <a class="button is-primary pb-2 mb-2" href="/admin/flags/create">Create flag</a>
+          </div>
+          <br />
+          <table class="table pt-2 mt-2">
             <thead>
                 <tr>
                   <th>Name</th>
                   <th>Description</th>
                   <th>Owner</th>
+                  <th>Joinable</th>
                   <th>Permissions</th>
                 </tr>
               </thead>
@@ -32,6 +36,9 @@
                     </th>
                     <th>
                         <%= owners[flags[i]._id] %> 
+                    </th>
+                    <th>
+                        <%= flags[i].joinable%> 
                     </th>
                     <th>
                         <%= flags[i].permissions.join(", ") %> 

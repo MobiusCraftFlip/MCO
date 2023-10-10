@@ -1,13 +1,18 @@
 import { RecaptchaResponseV2 } from "express-recaptcha/dist/interfaces"
 import type {IUserSchema} from "./models/user.model"
+import { IGame, GameModel } from "./models/game.model";
+import { IOLine, OLineModel } from "./models/OLine.model";
 declare global {
     namespace Express {
         interface Request {
-            // isAuthenticated: () => boolean
-            // user: IUserSchema
-            // recaptcha?: RecaptchaResponseV2
+            isAuthenticated: () => boolean
+            user: IUserSchema
+            recaptcha?: RecaptchaResponseV2
+            flash: (string, string) => void
+            game: GameModel & { OLines: OLineModel[]}
+            oline: InstanceType<OLineModel>
         }
-        interface User {}
+        interface User extends IUserSchema {}
     }
 
     namespace NodeJS {
@@ -39,6 +44,8 @@ declare namespace Express {
         user: IUserSchema
         recaptcha?: RecaptchaResponseV2
         flash: (string, string) => void
+        game: GameModel & { OLines: OLineModel[]}
+        oline: InstanceType<OLineModel>
     }
     export interface User {
         id: string,

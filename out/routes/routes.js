@@ -47,8 +47,10 @@ const { check } = require("../util/permissions");
 const flags = require("../util/flags");
 module.exports = (app, passport, UserModel)=>{
     require("./admin")(app, passport, UserModel);
+    require("./game/index").default(app, passport, UserModel);
     require("./roblox")(app, passport, UserModel);
     require("./discord")(app, passport, UserModel);
+    require("./servers")(app, passport, UserModel);
     // Home Page
     app.get("/", (req, res)=>res.render("home", {
             isAuth: req.isAuthenticated(),
@@ -151,7 +153,8 @@ module.exports = (app, passport, UserModel)=>{
                 user: req.user,
                 profile: doc,
                 isRoot: check(req.user, "admin.user.edit.others"),
-                userStuff: _usermodel
+                userStuff: _usermodel,
+                req
             });
         }
     });

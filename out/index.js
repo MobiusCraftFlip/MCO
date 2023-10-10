@@ -5,17 +5,17 @@ Object.defineProperty(exports, "__esModule", {
 const _connectredis = /*#__PURE__*/ _interop_require_default(require("connect-redis"));
 const _expresssession = /*#__PURE__*/ _interop_require_default(require("express-session"));
 const _redisconfig = /*#__PURE__*/ _interop_require_default(require("./config/redis.config"));
+const _mongoose = /*#__PURE__*/ _interop_require_default(require("mongoose"));
+const _express = /*#__PURE__*/ _interop_require_default(require("express"));
 function _interop_require_default(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj
     };
 }
 require("dotenv").config();
-const express = require("express");
 require('express-async-errors');
-const app = express();
+const app = (0, _express.default)();
 const port = process.env.PORT || 8080;
-const mongoose = require("mongoose");
 const passport = require("passport");
 const flash = require("connect-flash");
 const morgan = require("morgan");
@@ -27,10 +27,11 @@ const dbConfig = require("./config/database.config");
 const { randomBytes } = require("crypto");
 const { refreshFlags } = require("./models/flags.model");
 // Configuration
-mongoose.connect(dbConfig.url, {
-    useNewUrlParser: true
+_mongoose.default.connect(dbConfig.url, {
 }).then(()=>{
     refreshFlags;
+}).catch((error)=>{
+    console.warn(error);
 });
 require("./config/passport.config")(passport);
 // Express setup
@@ -46,7 +47,12 @@ app.set('view options', {
 });
 app.set("trust proxy", true);
 app.set("views", path.join(__dirname, "..", "views"));
-app.use(express.static(__dirname + "/../public"));
+app.use(_express.default.static(__dirname + "/../public"));
+app.use((req, res, next)=>{
+    const key = `access:${req.ip.replaceAll(":", ".")}:${encodeURIComponent(req.url)}`;
+    _redisconfig.default.multi().incr(key).expire(key, 2000).exec();
+    next();
+});
 // Initialize store.
 let redisStore = new _connectredis.default({
     client: _redisconfig.default,

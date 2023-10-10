@@ -21,7 +21,7 @@ module.exports = (app: Application) => {
                 user: req.user,
                 profiles: docs,
                 isRoot: req.user.flags.includes("sudo"),
-                req: req
+                req: req,
             })
         }
     })
@@ -177,6 +177,59 @@ module.exports = (app: Application) => {
 
         await UserModel.deleteOne({username: req.params.username}).exec()
         res.status(200)
+    })
+
+    app.get("/user/:username/enable", async (req, res) => {
+        if (!req.isAuthenticated()) {
+            return res.sendStatus(404)
+        }
+
+        if (!(check(req.user, "admin.user.disable.others"))) {
+
+            return res.sendStatus(401)
+        }
+
+        const user = await UserModel.findOne({username: req.params.username}).exec()
+
+        if (!user) {
+            return res.render("404", {
+                isAuth: req.isAuthenticated(),
+                user: req.user,
+                profile: null,
+            })
+        }
+
+        user.disabled = false
+        user.disabledType = undefined
+        user.disabledReason = undefined
+        user.save()
+        res.redirect("/users")
+    })
+
+    app.get("/user/:username/disable", async (req, res) => {
+        if (!req.isAuthenticated()) {
+            return res.sendStatus(404)
+        }
+
+        if (!(check(req.user, "admin.user.disable.others"))) {
+            return res.sendStatus(401)
+        }
+
+        const user = await UserModel.findOne({username: req.params.username}).exec()
+
+        if (!user) {
+            return res.render("404", {
+                isAuth: req.isAuthenticated(),
+                user: req.user,
+                profile: null,
+            })
+        }
+
+        user.disabled = true
+        user.disabledType = "manual"
+        user.disabledReason = req.query.reason as string | undefined
+        user.save()
+        res.redirect("/users")
     })
 
     flagApp(app)

@@ -43,7 +43,7 @@ export default (app: Application) => {
     })
 
     app.post("/admin/flags/create", async (req, res) => {
-        const {name, description, permissions} = req.body as Record<string,string>
+        const {name, description, permissions, joinable, joinCodes} = req.body as Record<string,string>
         if (!(name && description && permissions)) {
             return res.sendStatus(400)
         }
@@ -55,6 +55,9 @@ export default (app: Application) => {
             description,
             owner: req.user._id,
             permissions: permissions.split(",").map((p) => p.trim()).filter((p) => check(req.user, p)),
+            joinable,
+            joinCodes: joinCodes.split(",").map((p) => p.trim())
+
         })
 
         await flag.save()
@@ -102,6 +105,7 @@ export default (app: Application) => {
         await doc.save()
         res.redirect("/admin/flags/")
     })
+
     app.post("/admin/flags/:flag/delete", async (req, res) => {
         console.log(req.body)
         if (!req.isAuthenticated()) {

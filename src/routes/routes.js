@@ -5,8 +5,10 @@ const flags = require("../util/flags")
 module.exports = (app, passport, UserModel) => {
 
   require("./admin")(app, passport, UserModel)
+  require("./game/index").default(app, passport, UserModel)
   require("./roblox")(app, passport, UserModel)
   require("./discord")(app, passport, UserModel)
+  require("./servers")(app, passport, UserModel)
 
   // Home Page
   app.get("/", (req, res) => res.render("home", {
@@ -122,6 +124,7 @@ module.exports = (app, passport, UserModel) => {
         profile: doc,
         isRoot: check(req.user, "admin.user.edit.others"),
         userStuff,
+        req,
       })
     }
   })

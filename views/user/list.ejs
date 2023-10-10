@@ -15,6 +15,7 @@
                   <th>Name</th>
                   <th>Email</th>
                   <th>Flags</th>
+                  <th>Disabled</th>
                 </tr>
               </thead>
               <tbody>
@@ -36,11 +37,18 @@
                         <%= profiles[i].flags.join(", ") %> 
                     </th>
                     <th>
+                        <%= profiles[i].disabled ? profiles[i].disabled + " " + profiles[i].disabledType + (profiles[i].disabledReason ? " " + profiles[i].disabledReason : "") : false %> 
+                    </th>
+                    <th>
                         
                         <form method="post" action="/user/<%= profiles[i].username %>/delete" onsubmit="return confirm('Do you really want delete the user <%= profiles[i].username %>?')">
                           <a class="button is-light is-small" href="/user/<%= profiles[i].username %>/edit">Edit</a>
-                          <a class="button is-danger is-small" href="/admin/password_reset_email/<%= profiles[i].username %>?redirect=<%= encodeURIComponent(`${req.protocol}://${req.get('host')}${req.originalUrl}`) %>">Password Reset</a>
                           <input id="submit-button" value="Delete" type="submit" class="button is-danger is-small"></input>
+                          <% if (!profiles[i].disabled) { %>
+                            <a id="user-disable-button" value="Diable" class="button is-danger is-small" href="/user/<%= profiles[i].username %>/disable">Disable</a>
+                          <% } else { %>
+                            <a id="user-enable-button" value="Enable" class="button is-danger is-small"  href="/user/<%= profiles[i].username %>/enable">Enable</a>
+                          <% } %>
                         </form>
                       </th>
                 </tr>

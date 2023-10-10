@@ -1,30 +1,40 @@
-import mongoose, { Schema, Types } from "mongoose"
+import mongoose, { ObjectId, Schema, Types } from "mongoose"
 import bcrypt from "bcrypt"
 import {render} from "ejs"
 
 export interface IUserSchema {
+  _id: ObjectId
   name: string,
   username: string,
   email: string,
   password: string,
   description: string,
 
-  roblox_id: string,
-  roblox_username: string,
-  roblox_displayname: string,
+  roblox_id?: string,
+  roblox_username?: string,
+  roblox_displayname?: string,
 
 
-  discord_id: string,
-  discord_username: string,
-  discord_displayname: string,
+  discord_id?: string,
+  discord_username?: string,
+  discord_displayname?: string,
 
-  disabled: boolean,
-  disabledReason: string,
+  disabled?: boolean,
+  disabledType?: "manual",
+  disabledReason?: string,
+
+  sshKeys?: string[],
+  apiKey: string,
 
   flags: string[],
 }
 
-let userSchema = new Schema<IUserSchema>({
+export interface IUserMethods {
+  generateHash: (password: string) => string
+  validatePassword: (password: string) => boolean
+}
+
+let userSchema = new Schema<IUserSchema & IUserMethods>({
   name: String,
   username: String,
   description: String,
@@ -41,7 +51,11 @@ let userSchema = new Schema<IUserSchema>({
   discord_displayname: String,
 
   disabled: Boolean,
+  disabledType: String,
   disabledReason: String,
+
+  sshKeys: [String],
+  apiKey: String,
 
   flags: [String],
 })
@@ -75,6 +89,9 @@ export const sudo_editable = {
   discord_id: (u) => textInput("discord_id", u.discord_id),
   discord_username: (u) => textInput("discord_username", u.discord_username),
   discord_displayname: (u) => textInput("discord_displayname", u.discord_displayname),
+  disabled: (u) => textInput("disabled", u.disabled ? JSON.stringify(u.disabled) : "false"),
+  disabledType: (u) => textInput("disabledType", u.disabledType ? u.disabledType : ""),
+  disabledReason: (u) => textInput("disabledReason", u.disabledReason ? u.disabledReason : ""),
   flags: () => "",
 } as {[key: string]: (u: IUserSchema) => string}
 
@@ -94,6 +111,11 @@ export const visableNames = {
   discord_username: "Discord Username",
   discord_displayname: "Discord Displayname",
 
+  
+  disabled: "Disabled",
+  disabledType: "Disabled Type",
+  disabledReason: "Disabled Reason",
+  apiKey: "ApiKey",
   flags: "Flags",
 } as  {[key: string]: string}
 
@@ -107,6 +129,10 @@ function memorise<A,R>(func: (n: A) => Promise<R>)  {
     return results[argsKey];
   };
 };
+
+userSchema.pre("save", () => {
+
+})
 
 const UserModel = mongoose.model("user", userSchema)
 

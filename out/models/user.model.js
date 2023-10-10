@@ -88,7 +88,12 @@ let userSchema = new _mongoose.Schema({
     discord_username: String,
     discord_displayname: String,
     disabled: Boolean,
+    disabledType: String,
     disabledReason: String,
+    sshKeys: [
+        String
+    ],
+    apiKey: String,
     flags: [
         String
     ]
@@ -119,6 +124,9 @@ const sudo_editable = {
     discord_id: (u)=>textInput("discord_id", u.discord_id),
     discord_username: (u)=>textInput("discord_username", u.discord_username),
     discord_displayname: (u)=>textInput("discord_displayname", u.discord_displayname),
+    disabled: (u)=>textInput("disabled", u.disabled ? JSON.stringify(u.disabled) : "false"),
+    disabledType: (u)=>textInput("disabledType", u.disabledType ? u.disabledType : ""),
+    disabledReason: (u)=>textInput("disabledReason", u.disabledReason ? u.disabledReason : ""),
     flags: ()=>""
 };
 const visableNames = {
@@ -133,6 +141,10 @@ const visableNames = {
     discord_id: "Discord Userid",
     discord_username: "Discord Username",
     discord_displayname: "Discord Displayname",
+    disabled: "Disabled",
+    disabledType: "Disabled Type",
+    disabledReason: "Disabled Reason",
+    apiKey: "ApiKey",
     flags: "Flags"
 };
 function memorise(func) {
@@ -145,6 +157,7 @@ function memorise(func) {
         return results[argsKey];
     };
 }
+userSchema.pre("save", ()=>{});
 const UserModel = _mongoose.default.model("user", userSchema);
 const getUsernameFromId = memorise(async (id)=>{
     return (await UserModel.findById(id).exec())?.username;

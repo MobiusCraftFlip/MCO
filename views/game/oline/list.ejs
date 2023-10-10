@@ -1,0 +1,75 @@
+<%- include('/components/header') %>
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+          <p class="title is-4">Admin Requests</p>
+          <br />
+          <table class="table">
+            <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Team</th> 
+                  <th>Role</th>
+                  <th>Dates</th>
+                  <th>Team Lead</th>
+                  <th>Active</th>
+                </tr>
+              </thead>
+              <tbody>
+            <% for(var i=0; i<game.OLines.length; i++) { %>
+                <tr>
+                    <!-- <th>
+                        <%= game.OLines[i]._id %> 
+                    </th> -->
+                    <th>
+                        <a href="./user/<%= game.OLines[i].username %>"><%= game.OLines[i].roblox_username %> </a>
+                    </th>
+                    <th>
+                        <%= game.teams.get(game.OLines[i].team) %> 
+                    </th>
+                    <th>
+                        <%= game.admin_levels.get(game.OLines[i].admin_level)[0] %>
+                    </th>
+                    <th>
+                        <%= game.OLines[i].start %> 
+                        ->
+                        <%= game.OLines[i].expiry %> 
+                    </th>
+                    <th>
+                        <%= game.OLines[i].requestor %> 
+                    </th>
+                    <th>
+                        <%= game.OLines[i].approved ? "Active" : "Inactive" %> 
+                    </th>
+                    <th>
+                        
+                        <a class="button is-light is-small" href="/user/<%= game.OLines[i].username %>/edit">Edit</a>
+                        <a id="user-disable-button" value="Deactivate" class="button is-danger is-small" href="/games/<%= game._id %>/olines/<%= game.OLines[i]._id %>/delete">Delete</a>
+                        <% if (game.OLines[i].approved) { %>
+                        <a id="user-disable-button" value="Deactivate" class="button is-danger is-small" href="/games/<%= game._id %>/olines/<%= game.OLines[i]._id %>/unapprove">Unapprove</a>
+                            <% if (!game.OLines[i].active) { %>
+                                <a id="user-enable-button" value="Activate" class="button is-success is-small"  href="/games/<%= game._id %>/olines/<%= game.OLines[i]._id %>/activate">Activate</a>
+                            <% } %>
+                        <% } else { %>
+                        <a id="user-enable-button" value="Activate" class="button is-success is-small"  href="/games/<%= game._id %>/olines/<%= game.OLines[i]._id %>/approve">Approve</a>
+                        <% } %>
+                        <% if (game.OLines[i].active) { %>
+                            <a id="user-enable-button" value="Activate" class="button is-success is-danger is-small"  href="/games/<%= game._id %>/olines/<%= game.OLines[i]._id %>/deactivate">Deactivate</a>
+                        <% } %>
+                      </th>
+                </tr>
+            <% } %>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- confirm() -->
+<%- include('/components/footer') %>
