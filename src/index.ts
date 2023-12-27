@@ -5,6 +5,7 @@ import session from "express-session"
 import redisClient from "./config/redis.config";
 import mongoose from "mongoose"
 import express from "express"
+import { GameModel, IGame } from "./models/game.model";
 require('express-async-errors');
 const app = express();
 const port = process.env.PORT || 8080;
@@ -24,7 +25,7 @@ const { refreshFlags } = require("./models/flags.model");
 mongoose.connect(dbConfig.url, {
   // useNewUrlParser: true
 }).then(() => {
-  refreshFlags
+  refreshFlags()
 }).catch((error) => {
   console.warn(error)
 })
@@ -38,7 +39,16 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.set("view engine", "ejs");
-app.set('view options', {root: path.join(__dirname, "..","views")});
+let context = {} as {games: IGame[]}
+app.set('view options', {root: path.join(__dirname, "..","views"), context});
+
+(async () => {
+  context.games = await GameModel.find({}).exec()
+})()
+
+setInterval(async () => {
+  context.games = await GameModel.find({}).exec()
+}, 30*1000)
 
 app.set("trust proxy", true)
 

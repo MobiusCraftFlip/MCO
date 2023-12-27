@@ -33,7 +33,7 @@ export const refreshFlags = async () => {
     console.log(flg)
     console.log(flags)
 
-    Object.assign(flags, flg)
+    Object.assign(flags.flags, flg)
     console.log(flags)
 }
 

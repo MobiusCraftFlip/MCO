@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/config/database.config.js"],"sourcesContent":["module.exports = {\n  url : process.env.DB_URL\n}\n\n// 5Nak5uTBuzEdftTV"],"names":["module","exports","url","process","env","DB_URL"],"mappings":";AAAAA,OAAOC,OAAO,GAAG;IACfC,KAAMC,QAAQC,GAAG,CAACC,MAAM;AAC1B,EAEA,mBAAmB"}

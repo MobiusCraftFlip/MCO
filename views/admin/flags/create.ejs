@@ -31,14 +31,14 @@
         <div class="field">
           <label class="label">Joinable</label>
           <div class="control">
-            <input class="checkbox" name="members" type="joinable" placeholder="Members" id="form-joinable" value="<%= flag.joinable ? flag.joinable : false%>">
+            <input class="checkbox" name="members" type="checkbox" id="form-joinable" >
           </div>
         </div>
 
         <div class="field">
           <label class="label">Join Codes</label>
           <div class="control">
-            <input class="input" name="joinCodes" type="joinCodes" placeholder="csv join codes" id="form-joinCodes" value="<%= (flag.joinCodes ? flag.joinCodes : []).join(", ")%>">
+            <input class="input" name="joinCodes" type="joinCodes" placeholder="csv join codes" id="form-joinCodes" >
           </div>
         </div>
         
