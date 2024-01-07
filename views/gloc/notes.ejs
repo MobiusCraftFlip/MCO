@@ -6,43 +6,43 @@
         <div class="media-left">
         </div>
         <div class="media-content">
-          <p class="title is-4">GloucestershireWarnings</p>
+          <p class="title is-4">Gloucestershire Notes</p>
           <br />
           <table class="table">
             <tr>
               <th>Id</th>
-              <th>Warnee</th>
+              <th>Notee</th>
               <th>Moderator</th>
               <th>Active</th>
-              <th>Reason</th>
+              <th>Note</th>
               <th>Date</th>
             </tr>
-            <% for(var i=0; i<warnings.length; i++) { %>
+            <% for(var i=0; i<notes.length; i++) { %>
                 <tr>
                     <th>
-                        <%= warnings[i]._id %> 
+                        <%= notes[i]._id %> 
                     </th>
                     <th>
-                        <a href="./players/<%= warnings[i].userid %>"><%= warnings[i].name %> </a>
+                        <a href="./players/<%= notes[i].userid %>"><%= notes[i].name %> </a>
                     </th>
                     <th>
-                        <%= warnings[i].warner %> 
+                        <%= notes[i].warner %> 
                     </th>
                     <th>
-                        <%= warnings[i].active %> 
+                        <%= notes[i].active %> 
                     </th>
                     <th>
-                        <%= warnings[i].reason %> 
+                        <%= notes[i].reason %> 
                     </th>
                     <th>
-                        <%= warnings[i].date.toDateString() %> 
+                        <%= notes[i].date.toDateString() %> 
                     </th>
                     <th>
-                      <button class="button is-danger" onclick="button('DELETE', './warnings/<%= warnings[i]._id %>')">Delete</button>
-                      <% if (warnings[i].active) { %>
-                        <button class="button is-danger" onclick="button('PUT', './warnings/<%= warnings[i]._id %>/disable')">Deactive</button>
+                      <button class="button is-danger" onclick="button('DELETE', './notes/<%= notes[i]._id %>')">Delete</button>
+                      <% if (notes[i].active) { %>
+                        <button class="button is-danger" onclick="button('PUT', './notes/<%= notes[i]._id %>/disable')">Deactive</button>
                       <% } else { %>
-                        <button class="button" onclick="button('PUT', './warnings/<%= warnings[i]._id %>/enable')">Activate</button>
+                        <button class="button" onclick="button('PUT', './notes/<%= notes[i]._id %>/enable')">Activate</button>
                       <% }  %>
                     </th>
                 </tr>

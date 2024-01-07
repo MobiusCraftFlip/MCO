@@ -20,11 +20,8 @@
                 </tr>
               </thead>
               <tbody>
-            <% for(var i=0; i<game.OLines.length; i++) { %>
+            <% for(var i=0; i<game.OLines.length; i++) { if (game.OLines[i] == undefined) {return} %>
                 <tr>
-                    <!-- <th>
-                        <%= game.OLines[i]._id %> 
-                    </th> -->
                     <th>
                         <a href="./user/<%= game.OLines[i].username %>"><%= game.OLines[i].roblox_username %> </a>
                     </th>

@@ -21,6 +21,17 @@
     gtag('js', new Date());
 
     gtag('config', 'G-4QXZHXJTKE');
+
+    
+async function button(method, url, body) {
+  console.log(method)
+  console.log(url)
+    console.log(await fetch(url, {
+        method,
+        body
+    }))
+    window.location.reload();
+}
   </script>
   <title>MCO</title>
 </head>

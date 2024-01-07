@@ -4,6 +4,7 @@ import { notFoundRedirect, unautherisedRedirect } from "../../util/express"
 import { GameModel } from "../../models/game.model"
 import { check } from "../../util/permissions"
 import flags from "../../util/flags"
+import Router from "../gloc"
 
 export const gameMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     console.log()
@@ -46,6 +47,8 @@ export default (app: Application) => {
             check
         })
     })
+
+    app.use("/games/:game", Router)
 
     OLine(app)
 }

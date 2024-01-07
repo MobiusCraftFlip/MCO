@@ -1,0 +1,62 @@
+<%- include('../components/header') %>
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+          <p class="title is-4">Gloucestershire Bans</p>
+          <br />
+          <table class="table">
+            <tr>
+              <th>Id</th>
+              <th>Banee</th>
+              <th>Moderator</th>
+              <th>Reason</th>
+              <th>Active</th>
+              <th>Duration</th>
+              <th>Date</th>
+            </tr>
+            <% for(var i=0; i<bans.length; i++) { %>
+                <tr>
+                    <th>
+                        <%= bans[i]._id %> 
+                    </th>
+                    <th>
+                        <a href="./players/<%= bans[i].userid %>"><%= bans[i].name %> </a>
+                    </th>
+                    <th>
+                        <%= bans[i].warner %> 
+                    </th>
+                    <th>
+                        <%= bans[i].reason %> 
+                    </th>
+                    <th>
+                        <%= bans[i].active %> 
+                    </th>
+                    <th>
+                        <%= bans[i].duration %> 
+                    </th>
+                    <th>
+                        <%= bans[i].date.toDateString() %> 
+                    </th>
+                    <th>
+                      <button class="button is-danger" onclick="button('DELETE', './bans/<%= bans[i]._id %>')">Delete</button>
+                      <% if (bans[i].active) { %>
+                        <button class="button is-danger" onclick="button('PUT', './bans/<%= bans[i]._id %>/disable')">Deactive</button>
+                      <% } else { %>
+                        <button class="button" onclick="button('PUT', './bans/<%= bans[i]._id %>/enable')">Activate</button>
+                      <% }  %>
+                    </th>
+                </tr>
+            <% } %>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%- include('../components/footer') %>
