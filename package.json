@@ -59,6 +59,7 @@
     "eslint": "^6.1.0",
     "node-sass": "^9.0.0",
     "swc-loader": "^0.2.3",
+    "typescript": "^5.3.3",
     "webpack": "^5",
     "webpack-cli": "^5"
   }
