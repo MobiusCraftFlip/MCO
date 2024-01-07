@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --enable-source-maps out/index.js",
+    "start": "npx tsc && node --enable-source-maps out/index.js",
     "prestart": "npx swc src -d out -D && npx node-sass sass/main.scss public/css/style.css --output-style compressed && webpack"
   },
   "repository": {
